@@ -9,7 +9,8 @@
 #import "KAProjectManager.h"
 
 @implementation KAProjectManager
-+ (id)sharedManager{
+
++ (id)sharedManager {
     static KAProjectManager * shared = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -17,11 +18,9 @@
     });
     return shared;
 }
-- (NSDictionary *)createDictionaryWithProjectName:(NSString *)projectName andSeconds:(NSNumber *)seconds andSecondsSince:(NSNumber *)secondsSince{
-    return @{@"name": projectName, @"seconds" : seconds, @"secondsSince" : secondsSince};
-}
-- (BOOL)addNewProject:(NSString *)projectName{
-    if ([self getDictionaryAssociatedWithName:projectName]){
+
+- (BOOL)addNewProject:(NSString *)projectName {
+    if ([self getDictionaryAssociatedWithName:projectName]) {
         return NO;
     }
     NSMutableArray * array = [self projects].mutableCopy;
@@ -29,7 +28,9 @@
     [self setProjects:array];
     return YES;
 }
-- (void)addHoursToProjectName:(NSString *)name withHours:(double)hours{
+
+- (void)addHoursToProjectName:(NSString *)name withHours:(double)hours {
+    
     NSMutableArray * projects = [self projects].mutableCopy;
 
     NSDictionary * dict = [self getDictionaryAssociatedWithName:name];
@@ -41,47 +42,55 @@
     
     [self setProjects:projects];
 }
-- (NSArray *)projects{
+
+- (NSArray *)projects {
     NSArray * projects= [[NSUserDefaults standardUserDefaults] objectForKey:@"Projects"];
-    if (!projects){
+    if (!projects) {
         projects = @[];
         [[NSUserDefaults standardUserDefaults] setObject:projects forKey:@"Projects"];
     }
     return projects;
 }
-- (void)setProjects:(NSArray *)projects{
+
+- (void)setProjects:(NSArray *)projects {
     [[NSUserDefaults standardUserDefaults] setObject:projects forKey:@"Projects"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
 }
-- (double)getCurrentHoursFromProjectNamed:(NSString *)projectNamed{
+
+- (double)getCurrentHoursFromProjectNamed:(NSString *)projectNamed {
     NSDictionary * dict = [self getDictionaryAssociatedWithName:projectNamed];
     double currentSeconds = [(NSNumber *)dict[@"seconds"] doubleValue];
     return currentSeconds/3600.f;
 }
 
-- (NSDictionary *)getDictionaryAssociatedWithName:(NSString *)projectNamed{
+- (NSDictionary *)getDictionaryAssociatedWithName:(NSString *)projectNamed {
     NSMutableArray * projects = [self projects].mutableCopy;
-    for (NSDictionary * dict in projects){
-        if ([dict[@"name"] isEqualToString:projectNamed]){
+    for (NSDictionary * dict in projects) {
+        if ([dict[@"name"] isEqualToString:projectNamed]) {
             return dict;
         }
     }
     return nil;
 }
-- (void)removeProjectNamed:(NSString *)projectNamed{
+
+- (void)removeAllProjects {
+    [self setProjects:@[]];
+
+}
+
+- (void)removeProjectNamed:(NSString *)projectNamed {
     NSDictionary * dict = [self getDictionaryAssociatedWithName:projectNamed];
-    if (dict){
+    if (dict) {
         NSMutableArray * projects = [self projects].mutableCopy;
         [projects removeObject:dict];
         [self setProjects:projects];
     }
 }
 
-
-- (double)stopTimeWithProjectName:(NSString *)projectName{
+- (double)stopTimeWithProjectName:(NSString *)projectName {
     NSDictionary * dict = [self getDictionaryAssociatedWithName:projectName];
-    if (dict){
+    if (dict) {
         NSNumber * secondsSince = dict[@"secondsSince"];
         double currentSeconds = [(NSNumber *)dict[@"seconds"] doubleValue];
         NSNumber * newSecondsToAdd = @([[NSDate date] timeIntervalSince1970] - [secondsSince doubleValue]);
@@ -96,10 +105,9 @@
     return 0.0;
 }
 
-- (void)startTimeWithProjectName:(NSString *)projectName
-{
+- (void)startTimeWithProjectName:(NSString *)projectName {
     NSDictionary * dict = [self getDictionaryAssociatedWithName:projectName];
-    if (dict){
+    if (dict) {
         NSMutableDictionary * newDict = [[self createDictionaryWithProjectName:dict[@"name"] andSeconds:dict[@"seconds"] andSecondsSince:@([[NSDate date] timeIntervalSince1970])] mutableCopy];
         NSMutableArray * projects = [[self projects] mutableCopy];
         NSInteger i = [projects indexOfObject:dict];
@@ -110,8 +118,10 @@
 
 }
 
+#pragma mark Private
 
-
-
+- (NSDictionary *)createDictionaryWithProjectName:(NSString *)projectName andSeconds:(NSNumber *)seconds andSecondsSince:(NSNumber *)secondsSince { // NSDictionary will automatically make sure that you can't put anything nil here.
+    return @{@"name": projectName, @"seconds" : seconds, @"secondsSince" : secondsSince};
+}
 
 @end

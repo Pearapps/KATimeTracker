@@ -45,10 +45,13 @@
             NSDictionary * dict = projects[i];
             printf("%ld. %s\n", i+1, [(NSString *)dict[@"name"] UTF8String]);
         }
-        input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@"\nInput number of project you wish to open (or Q to go back): "];
-        while (!([input rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location == NSNotFound) || [input integerValue] > projects.count)
-        {
+        input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@"\nInput number of project you wish to open (Q to go back or D to delete all): "];
+        while (!([input rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location == NSNotFound) || [input integerValue] > projects.count) {
             if ([input isEqualToStringAndLower:@"Q"]){
+                return;
+            } else if ([input isEqualToStringAndLower:@"D"]) {
+                [[KAProjectManager sharedManager] removeAllProjects];
+                printf("\nSuccess!\n");
                 return;
             }
             printf("\nInvalid Input\n");

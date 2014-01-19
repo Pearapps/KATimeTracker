@@ -8,16 +8,18 @@
 
 #import <Foundation/Foundation.h>
 @interface KAProjectManager : NSObject
-+ (id)sharedManager; // use this shared manager
-- (NSArray *)projects; // all projects currently created
-- (BOOL)addNewProject:(NSString *)projectName; // add a new project with name: returns if successful or not (will fail if user tries to enter same
++ (id)sharedManager; // Gets the shared instance
 
-- (double)getCurrentHoursFromProjectNamed:(NSString *)projectNamed; // get current amount of hours
-- (void)addHoursToProjectName:(NSString *)name withHours:(double)hours; //add hours to a project
-- (void)removeProjectNamed:(NSString *)projectNamed; // delete a project
+- (NSArray *)projects; // All projects currently created
+- (BOOL)addNewProject:(NSString *)projectName; // Add a new project with name: returns if successful or not (will fail if user tries to enter same
 
+- (double)getCurrentHoursFromProjectNamed:(NSString *)projectNamed; // Get current amount of hours
+- (void)addHoursToProjectName:(NSString *)name withHours:(double)hours; // Add hours to a project
+- (void)removeProjectNamed:(NSString *)projectNamed; // Delete a project
+- (void)removeAllProjects; // Removes all current Projects
 
-// for live time tracking
-- (void)startTimeWithProjectName:(NSString *)projectName; // start tracking time
-- (double)stopTimeWithProjectName:(NSString *)projectName; //returns (in hours) what was just added
+// For live time tracking
+- (void)startTimeWithProjectName:(NSString *)projectName; // Start tracking time
+- (double)stopTimeWithProjectName:(NSString *)projectName; // Returns (in hours) what was just added
+
 @end

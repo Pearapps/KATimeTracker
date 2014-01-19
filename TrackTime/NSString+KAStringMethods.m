@@ -10,7 +10,7 @@
 
 @implementation NSString (KAStringMethods)
 
-- (BOOL)isEqualToArrayAnyOfTheseStrings:(NSArray *)array{
+- (BOOL)isEqualToAnyOfTheseStrings:(NSArray *)array{
     for (NSString * string in array){
         if ([self isEqualToString:string]){
             return YES;
@@ -20,6 +20,6 @@
 }
 
 - (BOOL)isEqualToStringAndLower:(NSString *)string{
-    return [self isEqualToArrayAnyOfTheseStrings:@[string, [string lowercaseString]]];
+    return [self isEqualToAnyOfTheseStrings:@[string, [string lowercaseString]]];
 }
 @end

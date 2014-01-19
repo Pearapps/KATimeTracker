@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (KAStringMethods)
-- (BOOL)isEqualToArrayAnyOfTheseStrings:(NSArray *)array;
+- (BOOL)isEqualToAnyOfTheseStrings:(NSArray *)array;
 - (BOOL)isEqualToStringAndLower:(NSString *)string;
 @end
