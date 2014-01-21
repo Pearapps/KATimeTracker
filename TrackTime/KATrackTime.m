@@ -16,17 +16,19 @@
 }
 
 - (void)mainMenu{
-    printf("\n\nMain Menu: \nA: Add new project\nB: Select current project\nQ: Quit\n");
+    printf("\n\nMain Menu: \nA: Add new project\nB: Select current project\nC: Just track time\nQ: Quit\n");
     NSString * input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@""];
-    while (![input isEqualToStringAndLower:@"Q"]){
-            if ([input isEqualToStringAndLower:@"B"]){
-                [self selectCurrentProject];
-            }else if ([input isEqualToStringAndLower:@"A"]){
-                [self addNewProject];
-            }
-            
-            printf("\n\nMain Menu: \nA: Add new project\nB: Select current project\nQ: Quit\n");
-            input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@""];
+    while (![input isEqualToStringAndLower:@"Q"]) {
+        if ([input isEqualToStringAndLower:@"B"]) {
+            [self selectCurrentProject];
+        } else if ([input isEqualToStringAndLower:@"A"]) {
+            [self addNewProject];
+        } else if ([input isEqualToStringAndLower:@"C"]) {
+            [self startTime:@"tempProj"];
+        }
+        
+        printf("\n\nMain Menu: \nA: Add new project\nB: Select current project\nC: Just track time\nQ: Quit\n");
+        input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@""];
     }
     
 }
