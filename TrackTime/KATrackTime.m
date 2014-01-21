@@ -70,71 +70,48 @@
     }
 }
 
-- (void)editingProject:(NSString *)projectname{
+- (void)editingProject:(NSString *)projectname {
     NSString * input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nEditing Project \"%@\": \nA: Show current hours\nB: Add hours manually\nC: *Start Time*\nD: Delete\nE: Back\n", projectname]];
-    while (true){
-        if ([input isEqualToStringAndLower:@"B"]){
+    while (true) {
+        if ([input isEqualToStringAndLower:@"B"]) {
             input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@"\nEnter hours:\n"];
-            while (!([input rangeOfCharacterFromSet:[[NSCharacterSet characterSetWithCharactersInString:@"1234567890."] invertedSet]].location == NSNotFound))
-            {
+            while (!([input rangeOfCharacterFromSet:[[NSCharacterSet characterSetWithCharactersInString:@"1234567890."] invertedSet]].location == NSNotFound)) {
                 input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@"\nEnter hours:\n"];
             }
             [[KAProjectManager sharedManager] addHoursToProjectName:projectname withHours:[input doubleValue]];
-        }
-        else if ([input isEqualToStringAndLower:@"A"]){
+        } else if ([input isEqualToStringAndLower:@"A"]) {
             printf("\nCurrent hours %f\n", [[KAProjectManager sharedManager] getCurrentHoursFromProjectNamed:projectname]);
-        } else if ([input isEqualToStringAndLower:@"C"]){
+        } else if ([input isEqualToStringAndLower:@"C"]) {
             [self startTime:projectname];
-        } else if ([input isEqualToStringAndLower:@"D"]){
+        } else if ([input isEqualToStringAndLower:@"D"]) {
             [[KAProjectManager sharedManager] removeProjectNamed:projectname];
             return;
-        }else if ([input isEqualToStringAndLower:@"E"]){
+        } else if ([input isEqualToStringAndLower:@"E"]) {
             return;
         }
         input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nEditing Project \"%@\": \nA: Show current hours\nB: Add hours manually\nC: *Start Time*\nD: Delete\nE: Back\n", projectname]];
     }
 }
-- (void)startTime:(NSString *)projectName{
+- (void)startTime:(NSString *)projectName {
     while (true) {
         [[KAProjectManager sharedManager] startTimeWithProjectName:projectName];
-        NSString * input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nStarting Time On \"%@\" at time: %@: P:Pause: D (or any other character): Done\n", projectName,[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date] ]]];
-        if ([input isEqualToStringAndLower:@"D"]){
+        NSString * input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nStarting Time On \"%@\" at time: %@: P:Pause: D (or any other character): Done\n", projectName,[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date]]]];
+        if ([input isEqualToStringAndLower:@"D"]) {
             double hoursAdded = [[KAProjectManager sharedManager] stopTimeWithProjectName:projectName];
-            printf("\n%f Hours added\n", hoursAdded);
+            printf("\nEnded at %s with %f Hours added\n", [[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date]] UTF8String], hoursAdded);
             return;
-        }else if ([input isEqualToStringAndLower:@"P"]){
+        } else if ([input isEqualToStringAndLower:@"P"]) {
             [[KAProjectManager sharedManager] stopTimeWithProjectName:projectName];
-            while (true){
+            while (true) {
                 input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nPAUSED: Press R to resume"]];
-                if ([input isEqualToStringAndLower:@"R"]){
+                if ([input isEqualToStringAndLower:@"R"]) {
                     break;
                 }
             }
         }else{
             return;
         }
-        
     }
-    
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @end
