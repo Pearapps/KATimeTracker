@@ -9,9 +9,10 @@
 #import "KATrackTime.h"
 #import "KAGeneralMethods.h"
 #import "KAProjectManager.h"
+#define tempProjectName @"g5tZb259U6FjzAaMRnKwetfs"
 @implementation KATrackTime
 
-- (void)start{
+- (void)start {
     [self mainMenu];
 }
 
@@ -24,7 +25,9 @@
         } else if ([input isEqualToStringAndLower:@"A"]) {
             [self addNewProject];
         } else if ([input isEqualToStringAndLower:@"C"]) {
-            [self startTime:@"tempProj"];
+            [[KAProjectManager sharedManager] addNewProject:tempProjectName];
+            [self startTime:tempProjectName];
+            [[KAProjectManager sharedManager] removeProjectNamed:tempProjectName];
         }
         
         printf("\n\nMain Menu: \nA: Add new project\nB: Select current project\nC: Just track time\nQ: Quit\n");
@@ -65,7 +68,7 @@
 }
 - (void)addNewProject{
     NSString * input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:@"\nEnter new project name: "];
-    if (input.length > 0 && [[KAProjectManager sharedManager] addNewProject:input]){
+    if (input.length > 0 && ![input isEqualToAnyOfTheseStrings:@[tempProjectName]] && [[KAProjectManager sharedManager] addNewProject:input]){
         printf("\nSuccess!\n");
     }else{
         printf("\nFailed!\n");
@@ -97,12 +100,17 @@
 - (void)startTime:(NSString *)projectName {
     while (true) {
         [[KAProjectManager sharedManager] startTimeWithProjectName:projectName];
-        NSString * input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nStarting Time On \"%@\" at time: %@: P:Pause: D (or any other character): Done\n", projectName,[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date]]]];
-        if ([input isEqualToStringAndLower:@"D"]) {
-            double hoursAdded = [[KAProjectManager sharedManager] stopTimeWithProjectName:projectName];
-            printf("\nEnded at %s with %f Hours added\n", [[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date]] UTF8String], hoursAdded);
-            return;
-        } else if ([input isEqualToStringAndLower:@"P"]) {
+        
+        NSString * input = nil;
+        
+        if ([projectName isEqualToAnyOfTheseStrings:@[tempProjectName]]) {
+            input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nStarting Time At: %@: P: Pause, D (or any other character): Done\n",[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date]]]];
+        } else {
+            input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nStarting Time On \"%@\" at time: %@: P: Pause, D (or any other character): Done\n", projectName,[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date]]]];
+        }
+        
+        
+       if ([input isEqualToStringAndLower:@"P"]) {
             [[KAProjectManager sharedManager] stopTimeWithProjectName:projectName];
             while (true) {
                 input = [[KAGeneralMethods sharedManager] takeInputOfLength:50 withMessage:[NSString stringWithFormat:@"\n\nPAUSED: Press R to resume"]];
@@ -110,8 +118,10 @@
                     break;
                 }
             }
-        }else{
-            return;
+        } else {
+           double hoursAdded = [[KAProjectManager sharedManager] stopTimeWithProjectName:projectName];
+           printf("\nEnded at %s with %f Hours added\n", [[[KAGeneralMethods sharedManager] stringFromDate:[NSDate date]] UTF8String], hoursAdded);
+           return;
         }
     }
 }
